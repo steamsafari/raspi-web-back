@@ -11,10 +11,10 @@ var io = require('socket.io-emitter')({
 
 module.exports = {
     /**
-     * 启动
+     * 马达
      */
     motor() {
-        var cmd = 'python ' + path.join(path.dirname(__dirname), '/models/py/wedo2.py');
+        var cmd = 'python ' + path.join(path.dirname(__dirname), '/models/py/wedo2/motor.py');
         var wp = child_process.exec(cmd, function (error, stdout, stderr) {
             if (error) {
                 console.log(error.stack);
@@ -25,6 +25,30 @@ module.exports = {
                 });
             } else {
                 io.emit('wedo2.motor', {
+                    code: 0
+                });
+            }
+        });
+
+        return {
+            code: 0
+        };
+    },
+    /**
+     * LED灯
+     */
+    led() {
+        var cmd = 'python ' + path.join(path.dirname(__dirname), '/models/py/wedo2/led.py');
+        var wp = child_process.exec(cmd, function (error, stdout, stderr) {
+            if (error) {
+                console.log(error.stack);
+                console.log('Error code: ' + error.code);
+                console.log('Signal received: ' + error.signal);
+                io.emit('wedo2.led', {
+                    code: 1
+                });
+            } else {
+                io.emit('wedo2.led', {
                     code: 0
                 });
             }
