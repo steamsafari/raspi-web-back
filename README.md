@@ -27,5 +27,12 @@ pm2 logs
 pm2 delete raspi-web
 ```
 
+# python
+
+需要安装gattlib
+```
+pip3 install gattlib
+```
+
 # 参考
 [PM2 Runtime | Quick Start](https://pm2.io/doc/en/runtime/quick-start/)
