@@ -13,18 +13,18 @@ module.exports = {
     /**
      * 启动
      */
-    run() {
+    motor() {
         var cmd = 'python ' + path.join(path.dirname(__dirname), '/models/py/wedo2.py');
         var wp = child_process.exec(cmd, function (error, stdout, stderr) {
             if (error) {
                 console.log(error.stack);
                 console.log('Error code: ' + error.code);
                 console.log('Signal received: ' + error.signal);
-                io.emit('wedo2.run', {
+                io.emit('wedo2.motor', {
                     code: 1
                 });
             } else {
-                io.emit('wedo2.run', {
+                io.emit('wedo2.motor', {
                     code: 0
                 });
             }
