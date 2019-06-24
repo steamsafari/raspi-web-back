@@ -33,7 +33,7 @@ module.exports = {
         mkdirsSync(absoluteOutputDir);
 
         var filename = 'foo.jpg';
-        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/capture.py') + ' ' + absoluteOutputDir + filename;
+        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/picamera/capture.py') + ' ' + absoluteOutputDir + filename;
         var wp = child_process.exec(cmd, function (error, stdout, stderr) {
             if (error) {
                 console.log(error.stack);
@@ -60,7 +60,7 @@ module.exports = {
      * 拍摄图片流
      */
     sequence() {
-        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/sequence.py') + ' 3002';
+        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/picamera/sequence.py') + ' 3002';
         var wp = child_process.exec(cmd, function (error, stdout, stderr) {
             if (error) {
                 console.log(error.stack);

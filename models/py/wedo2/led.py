@@ -2,7 +2,6 @@ from gattlib import DiscoveryService
 from gattlib import GATTRequester
 import os
 
-DELAY = 0.3
 InputCommand_hnd = 0x3a
 OutputCommand_hnd = 0x3d
 
