@@ -82,5 +82,32 @@ module.exports = {
         return {
             code: 0
         };
+    },
+    /**
+     * 检测颜色
+     */
+    detectColor() {
+        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/picamera/detect_color.py') + ' 3002';
+        var wp = child_process.exec(cmd, function (error, stdout, stderr) {
+            if (error) {
+                console.log(error.stack);
+                console.log('Error code: ' + error.code);
+                console.log('Signal received: ' + error.signal);
+                io.emit('picamera.detectColor', {
+                    code: 1
+                });
+            } else {
+                console.log('stream server started');
+                var ip = require('ip');
+                io.emit('picamera.detectColor', {
+                    code: 0,
+                    file: 'http://' + ip.address() + ':3002/'
+                });
+            }
+        });
+
+        return {
+            code: 0
+        };
     }
 }
