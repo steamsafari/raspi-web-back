@@ -109,5 +109,31 @@ module.exports = {
         return {
             code: 0
         };
+    },
+    /**
+     * 检测手势
+     */
+    detectGesture() {
+        const spawn = child_process.spawn;
+        const wp = spawn('python3', [path.join(path.dirname(__dirname), '/models/py/picamera/detect_gesture.py')])
+
+        wp.stdout.on('data', function (stdout) {
+            let gestures = stdout.toString().replace('\n', '');
+            gestures = gestures.split(' ');
+            io.emit('picamera.detectGesture', {
+                code: 0,
+                data: gestures
+            });
+        });
+        wp.on('close', function () {
+            io.emit('picamera.detectGesture', {
+                code: 0,
+                data: 'exit'
+            });
+        });
+
+        return {
+            code: 0
+        };
     }
 }
