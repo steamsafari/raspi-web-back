@@ -8,9 +8,9 @@ router.get('/', function (req, res, next) {
     });
 });
 
-/* GET picamera page. */
-router.get('/picamera', function (req, res, next) {
-    res.sendFile('picamera.html', {
+/* GET camera page. */
+router.get('/camera', function (req, res, next) {
+    res.sendFile('camera.html', {
         root: './public'
     });
 });

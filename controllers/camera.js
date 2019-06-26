@@ -28,24 +28,24 @@ module.exports = {
             }
         }
 
-        var relativeOutputDir = '/storage/picamera/capture/';
+        var relativeOutputDir = '/storage/camera/capture/';
         var absoluteOutputDir = process.cwd() + relativeOutputDir;
         mkdirsSync(absoluteOutputDir);
 
         var filename = 'foo.jpg';
-        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/picamera/capture.py') + ' ' + absoluteOutputDir + filename;
+        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/camera/capture.py') + ' ' + absoluteOutputDir + filename;
         var wp = child_process.exec(cmd, function (error, stdout, stderr) {
             if (error) {
                 console.log(error.stack);
                 console.log('Error code: ' + error.code);
                 console.log('Signal received: ' + error.signal);
-                io.emit('picamera.capture', {
+                io.emit('camera.capture', {
                     code: 1
                 });
             } else {
                 //console.log('stdout: ' + stdout);
                 console.log('stream server started');
-                io.emit('picamera.capture', {
+                io.emit('camera.capture', {
                     code: 0,
                     file: relativeOutputDir + filename
                 });
@@ -60,19 +60,18 @@ module.exports = {
      * 拍摄图片流
      */
     sequence() {
-        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/picamera/sequence.py') + ' 3002';
+        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/camera/sequence.py') + ' 3002';
         var wp = child_process.exec(cmd, function (error, stdout, stderr) {
             if (error) {
                 console.log(error.stack);
                 console.log('Error code: ' + error.code);
                 console.log('Signal received: ' + error.signal);
-                io.emit('picamera.sequence', {
+                io.emit('camera.sequence', {
                     code: 1
                 });
             } else {
-                console.log('stream server started');
                 var ip = require('ip');
-                io.emit('picamera.sequence', {
+                io.emit('camera.sequence', {
                     code: 0,
                     file: 'http://' + ip.address() + ':3002/'
                 });
@@ -87,19 +86,19 @@ module.exports = {
      * 检测颜色
      */
     detectColor() {
-        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/picamera/detect_color.py') + ' 3002';
+        var cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/camera/detect_color.py') + ' 3002';
         var wp = child_process.exec(cmd, function (error, stdout, stderr) {
             if (error) {
                 console.log(error.stack);
                 console.log('Error code: ' + error.code);
                 console.log('Signal received: ' + error.signal);
-                io.emit('picamera.detectColor', {
+                io.emit('camera.detectColor', {
                     code: 1
                 });
             } else {
                 console.log('stream server started');
                 var ip = require('ip');
-                io.emit('picamera.detectColor', {
+                io.emit('camera.detectColor', {
                     code: 0,
                     file: 'http://' + ip.address() + ':3002/'
                 });
@@ -115,18 +114,18 @@ module.exports = {
      */
     detectGesture() {
         const spawn = child_process.spawn;
-        const wp = spawn('python3', [path.join(path.dirname(__dirname), '/models/py/picamera/detect_gesture.py')])
+        const wp = spawn('python3', [path.join(path.dirname(__dirname), '/models/py/camera/detect_gesture.py')])
 
         wp.stdout.on('data', function (stdout) {
             let gestures = stdout.toString().replace('\n', '');
             gestures = gestures.split(' ');
-            io.emit('picamera.detectGesture', {
+            io.emit('camera.detectGesture', {
                 code: 0,
                 data: gestures
             });
         });
         wp.on('close', function () {
-            io.emit('picamera.detectGesture', {
+            io.emit('camera.detectGesture', {
                 code: 0,
                 data: 'exit'
             });
@@ -137,21 +136,22 @@ module.exports = {
         };
     },
     ocr() {
-        const spawn = child_process.spawn;
-        const wp = spawn('python3', [path.join(path.dirname(__dirname), '/models/py/picamera/ocr.py')])
-
-        wp.stdout.on('data', function (stdout) {
-            let text = stdout.toString().replace('\n', '');
-            io.emit('picamera.ocr', {
-                code: 0,
-                data: text
-            });
-        });
-        wp.on('close', function () {
-            io.emit('picamera.ocr', {
-                code: 0,
-                data: 'exit'
-            });
+        const cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/camera/ocr.py') + ' 3002';
+        const wp = child_process.exec(cmd, function (error, stdout, stderr) {
+            if (error) {
+                console.log(error.stack);
+                console.log('Error code: ' + error.code);
+                console.log('Signal received: ' + error.signal);
+                io.emit('camera.ocr', {
+                    code: 1
+                });
+            } else {
+                var ip = require('ip');
+                io.emit('camera.ocr', {
+                    code: 0,
+                    file: 'http://' + ip.address() + ':3002/'
+                });
+            }
         });
         return {
             code: 0

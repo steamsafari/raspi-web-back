@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var picamera = require('../controllers/picamera');
+var camera = require('../controllers/camera');
 var wedo2 = require('../controllers/wedo2');
 
-router.get('/picamera/:action', function (req, res) {
-    res.json(picamera[req.params.action]());
+router.get('/camera/:action', function (req, res) {
+    res.json(camera[req.params.action]());
 });
 
 router.get('/wedo2/:action', function (req, res) {
