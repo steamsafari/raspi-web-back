@@ -135,5 +135,26 @@ module.exports = {
         return {
             code: 0
         };
+    },
+    ocr() {
+        const spawn = child_process.spawn;
+        const wp = spawn('python3', [path.join(path.dirname(__dirname), '/models/py/picamera/ocr.py')])
+
+        wp.stdout.on('data', function (stdout) {
+            let text = stdout.toString().replace('\n', '');
+            io.emit('picamera.ocr', {
+                code: 0,
+                data: text
+            });
+        });
+        wp.on('close', function () {
+            io.emit('picamera.ocr', {
+                code: 0,
+                data: 'exit'
+            });
+        });
+        return {
+            code: 0
+        };
     }
 }
