@@ -136,22 +136,27 @@ module.exports = {
         };
     },
     ocr() {
-        const cmd = 'python3 ' + path.join(path.dirname(__dirname), '/models/py/camera/ocr.py') + ' 3002';
-        const wp = child_process.exec(cmd, function (error, stdout, stderr) {
-            if (error) {
-                console.log(error.stack);
-                console.log('Error code: ' + error.code);
-                console.log('Signal received: ' + error.signal);
-                io.emit('camera.ocr', {
-                    code: 1
+        const spawn = child_process.spawn;
+        const wp = spawn('python3', [path.join(path.dirname(__dirname), '/models/py/camera/ocr.py'), 3002])
+        wp.stdout.on('data', function (stdout) {
+            let data = stdout.toString().replace('\n', '');
+            if (data === 'http server is started') {
+                io.emit('camera.ocr.start', {
+                    code: 0,
+                    file: 'http://' + require('ip').address() + ':3002/'
                 });
             } else {
-                var ip = require('ip');
-                io.emit('camera.ocr', {
+                let digits = data.split(' ');
+                io.emit('camera.ocr.scan', {
                     code: 0,
-                    file: 'http://' + ip.address() + ':3002/'
+                    data: digits
                 });
             }
+        });
+        wp.on('close', function () {
+            io.emit('camera.ocr.exit', {
+                code: 0
+            });
         });
         return {
             code: 0
